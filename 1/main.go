@@ -3,22 +3,25 @@
 package main
 
 import (
+	"context"
 	"encoding/csv"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 	fmt.Println("Quiz Game")
 
 	csvFilename := flag.String("csv", "problems.csv", "a csv with the format 'problem,answer'")
+	duration := flag.Int("time", 10, "quiz time limit in seconds")
 	flag.Parse()
 
 	data := parseData(*csvFilename)
 	problems := parseProblems(data)
-	ra := serveQuestions(problems)
+	ra := serveQuestions(problems, *duration)
 
 	fmt.Printf("You scored %d out of %d.\n", ra, len(data))
 }
@@ -58,10 +61,18 @@ func parseProblems(data [][]string) []problem {
 	return problems
 }
 
-func serveQuestions(probs []problem) int {
+func serveQuestions(probs []problem, d int) int {
+	duration := time.Duration(d) * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), duration)
+	defer cancel()
+
 	ra := 0
 
 	for i, p := range probs {
+		if ctx.Err() != nil {
+			break
+		}
+
 		var ans string
 		fmt.Printf("Question #%v: %v=\n", i, p.q)
 		fmt.Scan(&ans)
