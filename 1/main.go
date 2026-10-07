@@ -4,49 +4,72 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
-	"io"
-	"log"
 	"os"
 	"strings"
 )
 
 func main() {
 	fmt.Println("Quiz Game")
-	// read quiz from file, line by line
-	// keep track of how many questions they ger right, wrong
-	// ask next question immediately
-	// output total correct total questions
 
-	ra, tq := 0, 0
+	csvFilename := flag.String("csv", "problems.csv", "a csv with the format 'problem,answer'")
+	flag.Parse()
 
-	bs, err := os.ReadFile("1/problems.csv")
+	data := parseData(*csvFilename)
+	problems := parseProblems(data)
+	ra := serveQuestions(problems)
+
+	fmt.Printf("You scored %d out of %d.\n", ra, len(data))
+}
+
+type problem struct {
+	q string
+	a string
+}
+
+func parseData(fn string) [][]string {
+	f, err := os.Open("1/" + fn)
 	if err != nil {
-		log.Println("Error:", err)
+		fmt.Printf("Unable to load csv file - %v \n", fn)
+		os.Exit(1)
 	}
-	data := string(bs)
-	r := csv.NewReader(strings.NewReader(data))
+	defer f.Close()
 
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		tq++
+	r := csv.NewReader(f)
+	data, err := r.ReadAll()
+	if err != nil {
+		fmt.Println("Unable to parse csv")
+		os.Exit(1)
+	}
 
+	return data
+}
+
+func parseProblems(data [][]string) []problem {
+	problems := make([]problem, len(data))
+	for i, v := range data {
+		problems[i] = problem{
+			q: strings.TrimSpace(v[0]),
+			a: strings.TrimSpace(v[1]),
+		}
+	}
+
+	return problems
+}
+
+func serveQuestions(probs []problem) int {
+	ra := 0
+
+	for i, p := range probs {
 		var ans string
-		q, a := record[0], record[1]
-
-		fmt.Println(q, "=")
+		fmt.Printf("Question #%v: %v=\n", i, p.q)
 		fmt.Scan(&ans)
 
-		if strings.TrimSpace(ans) == a {
+		if strings.TrimSpace(ans) == p.a {
 			ra++
 		}
 	}
 
-	fmt.Printf("You scored %d out of %d.\n", ra, tq)
+	return ra
 }
