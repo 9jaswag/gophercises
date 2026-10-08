@@ -3,7 +3,6 @@
 package main
 
 import (
-	"context"
 	"encoding/csv"
 	"flag"
 	"fmt"
@@ -63,22 +62,27 @@ func parseProblems(data [][]string) []problem {
 
 func serveQuestions(probs []problem, d int) int {
 	duration := time.Duration(d) * time.Second
-	ctx, cancel := context.WithTimeout(context.Background(), duration)
-	defer cancel()
+	timer := time.NewTimer(duration)
+	ansChan := make(chan string)
 
 	ra := 0
 
 	for i, p := range probs {
-		if ctx.Err() != nil {
-			break
-		}
-
-		var ans string
 		fmt.Printf("Question #%v: %v=\n", i, p.q)
-		fmt.Scan(&ans)
 
-		if strings.TrimSpace(ans) == p.a {
-			ra++
+		go func() {
+			var ans string
+			fmt.Scan(&ans)
+			ansChan <- ans
+		}()
+
+		select {
+		case <-timer.C:
+			return ra
+		case ans := <-ansChan:
+			if strings.TrimSpace(ans) == p.a {
+				ra++
+			}
 		}
 	}
 
