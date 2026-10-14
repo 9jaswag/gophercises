@@ -1,10 +1,14 @@
 package data
 
 import (
+	"embed"
 	"encoding/json"
 	"errors"
-	"os"
+	"io/fs"
 )
+
+//go:embed gopher.json
+var jsonFile embed.FS
 
 type (
 	Arcs         map[string]storyContent
@@ -34,7 +38,7 @@ func ReadAndParseJson(filepath string) (Arcs, error) {
 }
 
 func readJsonFile(filepath string) ([]byte, error) {
-	data, err := os.ReadFile(filepath)
+	data, err := fs.ReadFile(jsonFile, filepath)
 	if err != nil {
 		return []byte{}, errors.New("Error reading JSON file")
 	}
