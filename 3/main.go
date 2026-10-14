@@ -2,11 +2,22 @@ package main
 
 import (
 	"cyoa/data"
+	"embed"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 )
+
+//go:embed templates/*
+var files embed.FS
+
+/*
+ - go embed above tells Go to include the matching HTML files when compiling
+ - They're stored in the compiled executable
+ - ParseFS reads the stored templates from files.
+ - ParseGlob will look for actual directories, and if they're not available where the executable is, things break
+*/
 
 func main() {
 
@@ -15,9 +26,8 @@ func main() {
 		fmt.Println("Error accessing JSON:", err)
 	}
 
-	// TODO: look into template.ParseFS
 	app := &App{
-		tmpl: template.Must(template.ParseGlob("templates/*.html")),
+		tmpl: template.Must(template.ParseFS(files, "templates/*.html")),
 		strs: &stories,
 	}
 
