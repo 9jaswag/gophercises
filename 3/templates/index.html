@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111b24">
+  <title>Elsewhere — Your Adventure Begins</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111b24;
+      --text: #f3ebdd;
+      --muted: #b8c2c8;
+      --accent: #d9b779;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 20%, #283b45 0%, transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .page {
+      width: min(100% - 40px, 760px);
+      min-height: 100vh;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 0;
+      font-family: system-ui, sans-serif;
+    }
+
+    .brand {
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: -.04em;
+    }
+
+    .mark {
+      color: var(--accent);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font: 600 .72rem/1.5 system-ui, sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 0 80px;
+    }
+
+    .scene {
+      height: clamp(200px, 38vw, 330px);
+      border-radius: 16px;
+      margin-bottom: 40px;
+      background:
+        linear-gradient(0deg, #111b24aa, transparent 70%),
+        url("/static/forest.jpeg") center 55% / cover,
+        linear-gradient(135deg, #304c4b, #17252e);
+      border: 1px solid #ffffff14;
+    }
+
+    h1 {
+      max-width: 620px;
+      margin: 16px 0;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      font-weight: 400;
+      line-height: 1.03;
+      letter-spacing: -.055em;
+    }
+
+    .description {
+      max-width: 460px;
+      color: var(--muted);
+      font: 1.05rem/1.8 system-ui, sans-serif;
+    }
+
+    .actions {
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 22px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #111b24;
+      font: 650 0.95rem system-ui, sans-serif;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .button:hover {
+      background: #ead09e;
+      transform: translateY(-2px);
+    }
+
+    .button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+    }
+
+    button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 22px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #111b24;
+      font: 650 .95rem system-ui, sans-serif;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    button:hover {
+      background: #ead09e;
+      transform: translateY(-2px);
+    }
+
+    button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+    }
+
+    button:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    .hint {
+      color: #89969e;
+      font: .8rem system-ui, sans-serif;
+      margin-top: 16px;
+    }
+
+    #story {
+      margin-top: 32px;
+      color: var(--muted);
+      font: 1rem/1.8 system-ui, sans-serif;
+      white-space: pre-wrap;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid #ffffff16;
+      color: #89969e;
+      font: .75rem system-ui, sans-serif;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="brand"><span class="mark">✳</span> Elsewhere</div>
+      <span class="eyebrow">A story awaits</span>
+    </header>
+
+    <main>
+      <div class="scene" role="img" aria-label="A mysterious forest at twilight"></div>
+
+      <div class="eyebrow">Your next choice changes everything</div>
+      <h1>Every story begins somewhere.</h1>
+
+      <p class="description">
+        A path through the unknown. Decisions only you can make.
+        An adventure that unfolds one choice at a time.
+      </p>
+
+      <div class="actions">
+        <a class="button" href="/arc/intro">
+          Start your adventure <span aria-hidden="true">→</span>
+        </a>
+        <p class="hint">No rules to learn. Just choose your path.</p>
+      </div>
+
+      <section id="story" aria-live="polite" hidden></section>
+    </main>
+
+    <footer>One story. Countless possibilities.</footer>
+  </div>
+</body>
+
+</html>
